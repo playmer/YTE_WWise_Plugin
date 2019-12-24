@@ -41,8 +41,6 @@ namespace YTEPlugin::WWise
   WWiseEmitter::WWiseEmitter(Composition *aOwner, Space *aSpace)
     : Component(aOwner, aSpace)
   {
-    static int count = 0;
-    printf("Emitter() #%d\n", ++count);
     mEmitterPosition.ConstructAndGet<AkSoundPosition>();
     mIsListening = true;
   }
@@ -70,19 +68,16 @@ namespace YTEPlugin::WWise
 
   void WWiseEmitter::Play()
   {
-    printf("Emitter Play\n");
     mSpace->GetEngine()->GetComponent<WWiseSystem>()->SendEvent(mSound, OwnerId());
   }
 
   void WWiseEmitter::PlayEvent(const std::string &aEvent)
   {
-    printf("Emitter PlayEvent(const std::string &aEvent)\n");
     mSpace->GetEngine()->GetComponent<WWiseSystem>()->SendEvent(aEvent, OwnerId());
   }
 
   void WWiseEmitter::PlayEvent(u64 aEvent)
   {
-    printf("Emitter PlayEvent(u64 aEvent)\n");
     mSpace->GetEngine()->GetComponent<WWiseSystem>()->SendEvent(aEvent, OwnerId());
   }
 
@@ -92,9 +87,6 @@ namespace YTEPlugin::WWise
 
     if (view)
     {
-      static int count = 0;
-      printf("Emitter::Initialize() #%d\n", ++count);
-
       auto listener = view->GetActiveListener()->OwnerId();
       AK::SoundEngine::SetListeners(OwnerId(), &listener, 1);
     }
@@ -134,7 +126,6 @@ namespace YTEPlugin::WWise
 
   void WWiseEmitter::SetEmitterPosition()
   {
-    printf("Emitter::SetEmitterPosition()\n");
     auto self = mEmitterPosition.Get<AkSoundPosition>();
     AK::SoundEngine::SetPosition(OwnerId(), *self);
   }
