@@ -11,14 +11,14 @@
 #include "YTE/Core/Engine.hpp"
 
 #include "YTEditor/YTELevelEditor/Widgets/ComponentBrowser/ComponentBrowser.hpp"
-#include "YTEditor/YTELevelEditor/Widgets/WWiseViewer/WWiseWidget.hpp"
+#include "YTEPlugin/Editor/WWiseWidget.hpp"
 
 namespace YTEditor
 {
   class SetWWiseSwitch : public QComboBox
   {
   public:
-    SetWWiseSwitch(QWidget *aOwner, YTE::u64 aGroupId, YTE::WWiseSystem *aSystem, WWiseWidget *aWidget, bool aSwitch)
+    SetWWiseSwitch(QWidget *aOwner, YTE::u64 aGroupId, YTEPlugin::WWise::WWiseSystem *aSystem, WWiseWidget *aWidget, bool aSwitch)
       : QComboBox(aOwner)
       , mGroupId(aGroupId)
       , mSystem(aSystem)
@@ -56,7 +56,7 @@ namespace YTEditor
     }
 
   private:
-    YTE::WWiseSystem *mSystem;
+    YTEPlugin::WWise::WWiseSystem *mSystem;
     YTE::u64 mGroupId;
     WWiseWidget *mWidget;
     bool mSwitch;
@@ -65,7 +65,7 @@ namespace YTEditor
   class SetWWiseRTPC : public QLineEdit
   {
   public:
-    SetWWiseRTPC(QWidget *aOwner, YTE::u64 aRTPCId, YTE::WWiseSystem *aSystem)
+    SetWWiseRTPC(QWidget *aOwner, YTE::u64 aRTPCId, YTEPlugin::WWise::WWiseSystem *aSystem)
       : QLineEdit(aOwner)
       , mRTPCId(aRTPCId)
       , mSystem(aSystem)
@@ -89,14 +89,14 @@ namespace YTEditor
     }
 
   private:
-    YTE::WWiseSystem *mSystem;
+    YTEPlugin::WWise::WWiseSystem *mSystem;
     YTE::u64 mRTPCId;
   };
 
   class SendWWiseEvent : public QPushButton
   {
   public:
-    SendWWiseEvent(YTE::WWiseSystem *aSystem, 
+    SendWWiseEvent(YTEPlugin::WWise::WWiseSystem *aSystem, 
                    const std::string &aEvent, 
                    YTE::u64 aEventId, 
                    WWiseWidget *aWidget)
@@ -121,7 +121,7 @@ namespace YTEditor
     }
 
   private:
-    YTE::WWiseSystem *mSystem;
+    YTEPlugin::WWise::WWiseSystem *mSystem;
     YTE::u64 mEventId;
     WWiseWidget *mWidget;
   };
@@ -131,7 +131,7 @@ namespace YTEditor
     , mEngine{ aEngine }
   {
     std::string name{ "WWiseWidget" };
-    mSystem = mEngine->GetComponent<YTE::WWiseSystem>();
+    mSystem = mEngine->GetComponent<YTEPlugin::WWise::WWiseSystem>();
     mSystem->RegisterObject(OwnerId(), name);
     auto listener = OwnerId();
     AK::SoundEngine::SetListeners(OwnerId(), &listener, 1);

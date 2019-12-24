@@ -46,8 +46,8 @@ namespace YTEPlugin::WWise
       helper.CreateComponentFactory<WWiseEmitter>();
       helper.CreateComponentFactory<WWiseListener>();
       helper.CreateComponentFactory<WWiseView>();
-      
-      //aEngine->RemoveComponent(WWiseSystem::GetStaticType());
+
+      mEngine->RemoveComponent(WWiseSystem::GetStaticType());
     }
 
     YTE::Engine *mEngine;

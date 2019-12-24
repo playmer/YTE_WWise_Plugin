@@ -7,7 +7,7 @@
 
 #include "YTE/Core/ForwardDeclarations.hpp"
 
-#include "YTE/WWise/WWiseSystem.hpp"
+#include "YTEPlugin/Engine/WWiseSystem.hpp"
 
 #include "YTEditor/Framework/MainWindow.hpp"
 #include "YTEditor/Framework/Widget.hpp"
@@ -22,7 +22,7 @@ namespace YTEditor
     WWiseWidget(YTELevelEditor* aWorkspace, YTE::Engine* aEngine);
     ~WWiseWidget();
 
-    YTE::WwiseObject OwnerId() { return reinterpret_cast<YTE::WwiseObject>(this); };
+    YTEPlugin::WWise::WwiseObject OwnerId() { return reinterpret_cast<YTEPlugin::WWise::WwiseObject>(this); };
 
     void LoadEvents();
 
@@ -33,7 +33,7 @@ namespace YTEditor
   private:
 
     YTE::Engine *mEngine;
-    YTE::WWiseSystem *mSystem;
+    YTEPlugin::WWise::WWiseSystem* mSystem;
 
     QVBoxLayout *mLayout;
     QWidget *mSubWidget;

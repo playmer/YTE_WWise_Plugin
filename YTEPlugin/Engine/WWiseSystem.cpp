@@ -157,6 +157,8 @@ namespace YTEPlugin::WWise
     AkInitSettings initSettings;
     AkPlatformInitSettings platformInitSettings;
     AK::SoundEngine::GetDefaultInitSettings(initSettings);
+    initSettings.uCommandQueueSize = 1000000;
+
     AK::SoundEngine::GetDefaultPlatformInitSettings(platformInitSettings);
 
     if (AK::SoundEngine::Init(&initSettings, &platformInitSettings) != AK_Success)
@@ -174,21 +176,20 @@ namespace YTEPlugin::WWise
       assert(!"Could not initialize the Music Engine.");
     }
 
-    #ifndef AK_OPTIMIZED 
+    if constexpr (CompilerOptions::Debug())
     {
-        AkCommSettings commSettings;
-        AK::Comm::GetDefaultInitSettings(commSettings);
+      AkCommSettings commSettings;
+      AK::Comm::GetDefaultInitSettings(commSettings);
 
-        if (AK::Comm::Init(commSettings) != AK_Success)
-        {
-          assert(!"Could not initialize communication.");
-        }
+      if (AK::Comm::Init(commSettings) != AK_Success)
+      {
+        assert(!"Could not initialize communication.");
+      }
     }
-    #endif
 
     LoadAllBanks();
 
-    
+    mOwner->RegisterEvent<&WWiseSystem::Update>(Events::PreFrameUpdate, this);
 
     //// Register the main listener.
     // WwiseObject MY_DEFAULT_LISTENER = reinterpret_cast<WwiseObject>(this);
@@ -330,7 +331,7 @@ namespace YTEPlugin::WWise
     AK::SoundEngine::SetRTPCValue(static_cast<AkRtpcID>(aRTPC), aValue);
   }
 
-  void WWiseSystem::Update(double)
+  void WWiseSystem::Update(LogicUpdate*)
   {
     AK::SoundEngine::RenderAudio(true);
   }

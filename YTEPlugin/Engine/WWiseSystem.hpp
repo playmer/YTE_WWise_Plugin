@@ -61,7 +61,7 @@ namespace YTEPlugin::WWise
 
     YTEPlugin_WWise_Shared virtual void Initialize() override;
     // Updates the system to the current frame.
-    YTEPlugin_WWise_Shared void Update(double);
+    YTEPlugin_WWise_Shared void Update(YTE::LogicUpdate*);
 
     // Cleans up anything in the system.
     YTEPlugin_WWise_Shared ~WWiseSystem() override;

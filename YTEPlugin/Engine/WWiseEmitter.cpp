@@ -41,7 +41,10 @@ namespace YTEPlugin::WWise
   WWiseEmitter::WWiseEmitter(Composition *aOwner, Space *aSpace)
     : Component(aOwner, aSpace)
   {
+    static int count = 0;
+    printf("Emitter() #%d\n", ++count);
     mEmitterPosition.ConstructAndGet<AkSoundPosition>();
+    mIsListening = true;
   }
 
   WWiseEmitter::~WWiseEmitter()
@@ -67,16 +70,19 @@ namespace YTEPlugin::WWise
 
   void WWiseEmitter::Play()
   {
+    printf("Emitter Play\n");
     mSpace->GetEngine()->GetComponent<WWiseSystem>()->SendEvent(mSound, OwnerId());
   }
 
   void WWiseEmitter::PlayEvent(const std::string &aEvent)
   {
+    printf("Emitter PlayEvent(const std::string &aEvent)\n");
     mSpace->GetEngine()->GetComponent<WWiseSystem>()->SendEvent(aEvent, OwnerId());
   }
 
   void WWiseEmitter::PlayEvent(u64 aEvent)
   {
+    printf("Emitter PlayEvent(u64 aEvent)\n");
     mSpace->GetEngine()->GetComponent<WWiseSystem>()->SendEvent(aEvent, OwnerId());
   }
 
@@ -86,6 +92,9 @@ namespace YTEPlugin::WWise
 
     if (view)
     {
+      static int count = 0;
+      printf("Emitter::Initialize() #%d\n", ++count);
+
       auto listener = view->GetActiveListener()->OwnerId();
       AK::SoundEngine::SetListeners(OwnerId(), &listener, 1);
     }
@@ -94,21 +103,7 @@ namespace YTEPlugin::WWise
       std::cout << "No WWiseView on the current space, playing will fail!\n";
     }
 
-    auto transform = mOwner->GetComponent<Transform>();
-
-    if (transform != nullptr)
-    {
-      auto self = mEmitterPosition.Get<AkSoundPosition>();
-
-      mOwner->RegisterEvent<&WWiseEmitter::OnPositionChange>(YTE::Events::PositionChanged, this);
-      mOwner->RegisterEvent<&WWiseEmitter::OnOrientationChange>(YTE::Events::OrientationChanged, this);
-      self->SetPosition(MakeAkVec(transform->GetTranslation()));
-
-      auto orientation = mOwner->GetComponent<Orientation>();
-
-      self->SetOrientation(MakeAkVec(orientation->GetForwardVector()),
-                           MakeAkVec(orientation->GetUpVector()));
-    }
+    RegisterForListening();
 
     SetEmitterPosition();
   }
@@ -139,7 +134,48 @@ namespace YTEPlugin::WWise
 
   void WWiseEmitter::SetEmitterPosition()
   {
+    printf("Emitter::SetEmitterPosition()\n");
     auto self = mEmitterPosition.Get<AkSoundPosition>();
     AK::SoundEngine::SetPosition(OwnerId(), *self);
+  }
+
+  void WWiseEmitter::RegisterForListening()
+  {
+      auto transform = mOwner->GetComponent<Transform>();
+
+      if (transform != nullptr)
+      {
+        auto self = mEmitterPosition.Get<AkSoundPosition>();
+
+        mOwner->RegisterEvent<&WWiseEmitter::OnPositionChange>(YTE::Events::PositionChanged, this);
+        mOwner->RegisterEvent<&WWiseEmitter::OnOrientationChange>(YTE::Events::OrientationChanged, this);
+        self->SetPosition(MakeAkVec(transform->GetTranslation()));
+
+        auto orientation = mOwner->GetComponent<Orientation>();
+
+        self->SetOrientation(MakeAkVec(orientation->GetForwardVector()),
+                             MakeAkVec(orientation->GetUpVector()));
+      }
+  }
+
+  
+  void WWiseEmitter::ListenToTransformEvents(bool aListen)
+  {
+    if (mIsListening == aListen)
+    {
+      return;
+    }
+
+    mIsListening = aListen;
+
+    if (aListen)
+    {
+      RegisterForListening();
+    }
+    else
+    {
+      mOwner->DeregisterEvent<&WWiseEmitter::OnPositionChange>(YTE::Events::PositionChanged, this);
+      mOwner->DeregisterEvent<&WWiseEmitter::OnOrientationChange>(YTE::Events::OrientationChanged, this);
+    }
   }
 }

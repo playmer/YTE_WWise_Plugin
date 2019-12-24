@@ -32,6 +32,11 @@ namespace YTEPlugin::WWise
 
     YTEPlugin_WWise_Shared void ListenerChanged(WWiseListenerChanged *aListenerChange);
 
+    // Sometimes a transform can change too much, and we don't actually need to know the precise location,
+    // for those times, you can turn off our listening to transform change events.
+    // This is also helpful for reducing our churn to the sound engine.
+    YTEPlugin_WWise_Shared void ListenToTransformEvents(bool aListen);
+
     inline WwiseObject OwnerId() { return reinterpret_cast<WwiseObject>(mOwner); };
 
   private:
@@ -39,11 +44,13 @@ namespace YTEPlugin::WWise
     void OnPositionChange(const YTE::TransformChanged *aEvent);
     void OnOrientationChange(const YTE::OrientationChanged *aEvent);
 
-    YTE::PrivateImplementationLocal<128> mEmitterPosition;
-    int mListenerId;
+    void RegisterForListening();
 
+    YTE::PrivateImplementationLocal<48> mEmitterPosition;
     std::string mSound;
+    int mListenerId;
     float mVolume;
+    bool mIsListening;
   };
 }
 
