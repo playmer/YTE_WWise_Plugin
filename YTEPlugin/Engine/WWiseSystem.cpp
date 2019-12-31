@@ -109,10 +109,13 @@ namespace YTEPlugin::WWise
     , mAvailableListeners{0,1,2,3,4,5,6,7}
   {
     UnusedArguments(aOwner, aSpace);
+    OPTICK_EVENT();
   }
 
   void WWiseSystem::Initialize()
   {
+    OPTICK_EVENT();
+
     // Create and initialize an instance of the default memory manager. Note
     // that you can override the default memory manager with your own. Refer
     // to the SDK documentation for more information.
@@ -526,6 +529,7 @@ namespace YTEPlugin::WWise
   void WWiseSystem::LoadAllBanks()
   {
     namespace fs = std::filesystem;
+    OPTICK_EVENT();
 
     auto gamePath{ Path::GetGamePath() };
     auto gamePathStr{ gamePath.String() };
@@ -599,6 +603,7 @@ namespace YTEPlugin::WWise
 
   AudioBank& WWiseSystem::LoadBank(const std::string &aFilename)
   {
+    OPTICK_EVENT();
     auto &bank{ mBanks[aFilename] };
 
     AkBankID id;
