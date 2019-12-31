@@ -42,10 +42,10 @@ namespace YTEPlugin::WWise
     {
       YTE::ComponentFactoryHelper helper{ mEngine, mEngine->GetComponentSystem()->GetComponentFactories() };
 
-      helper.CreateComponentFactory<WWiseSystem>();
-      helper.CreateComponentFactory<WWiseEmitter>();
-      helper.CreateComponentFactory<WWiseListener>();
-      helper.CreateComponentFactory<WWiseView>();
+      helper.DestroyComponentFactory<WWiseSystem>();
+      helper.DestroyComponentFactory<WWiseEmitter>();
+      helper.DestroyComponentFactory<WWiseListener>();
+      helper.DestroyComponentFactory<WWiseView>();
 
       mEngine->RemoveComponent(WWiseSystem::GetStaticType());
     }
