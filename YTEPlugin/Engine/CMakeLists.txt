@@ -25,5 +25,9 @@ set_target_properties(YTEPlugin_WWise
 
 target_link_libraries(YTEPlugin_WWise PUBLIC WWise_SoundEngine YTE)
 
+if (MSVC)
+  target_link_libraries(YTEPlugin_WWise PUBLIC dinput8.lib Ws2_32.lib dsound.lib dxguid.lib)
+endif()
+
 target_include_directories(YTEPlugin_WWise PUBLIC ${YTE_Plugin_WWise_Root})
 target_compile_definitions(YTEPlugin_WWise PRIVATE YTEPlugin_WWise_Internal=1)

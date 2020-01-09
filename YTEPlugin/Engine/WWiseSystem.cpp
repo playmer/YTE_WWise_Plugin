@@ -205,7 +205,7 @@ namespace YTEPlugin::WWise
   }
 
 
-  u8 WWiseSystem::RegisterListener(WwiseObject aId, std::string& aName)
+  u8 WWiseSystem::RegisterListener(WwiseObject aId, std::string const& aName)
   {
     if (0 != mAvailableListeners.size())
     {
@@ -225,7 +225,7 @@ namespace YTEPlugin::WWise
     mAvailableListeners.emplace_back(aListener);
   }
 
-  void WWiseSystem::RegisterObject(WwiseObject aId, std::string &aName)
+  void WWiseSystem::RegisterObject(WwiseObject aId, std::string const& aName)
   {
     auto check = AK::SoundEngine::RegisterGameObj(static_cast<AkGameObjectID>(aId), aName.c_str());
     UnusedArguments(check);

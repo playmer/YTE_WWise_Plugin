@@ -13,7 +13,7 @@
 #include "YTEditor/YTELevelEditor/Widgets/ComponentBrowser/ComponentBrowser.hpp"
 #include "YTEPlugin/Editor/WWiseWidget.hpp"
 
-namespace YTEditor
+namespace YTEPlugin::WWise
 {
   class SetWWiseSwitch : public QComboBox
   {
@@ -105,7 +105,11 @@ namespace YTEditor
       , mSystem(aSystem)
       , mWidget(aWidget)
     {
+      auto listenerId = static_cast<AkGameObjectID>(aWidget->OwnerId());
+      aSystem->RegisterObject(OwnerId(), aEvent);
 
+      auto check = AK::SoundEngine::SetListeners(OwnerId(), &listenerId, 1);
+      assert(check == AK_Success);
     }
 
     ~SendWWiseEvent()
@@ -113,28 +117,26 @@ namespace YTEditor
 
     }
 
-    AkGameObjectID OwnerId() { return reinterpret_cast<AkGameObjectID>(mWidget); };
-
     void clicked()
     {
       mSystem->SendEvent(mEventId, OwnerId());
     }
+    
+    AkGameObjectID OwnerId() { return static_cast<AkGameObjectID>(reinterpret_cast<YTEPlugin::WWise::WwiseObject>(this)); };
 
   private:
-    YTEPlugin::WWise::WWiseSystem *mSystem;
+    WWiseSystem* mSystem;
     YTE::u64 mEventId;
-    WWiseWidget *mWidget;
+    WWiseWidget* mWidget;
   };
 
-  WWiseWidget::WWiseWidget(YTELevelEditor* aWorkspace, YTE::Engine* aEngine)
+  WWiseWidget::WWiseWidget(YTEditor::YTELevelEditor* aWorkspace, YTE::Engine* aEngine)
     : Widget{ aWorkspace }
     , mEngine{ aEngine }
   {
     std::string name{ "WWiseWidget" };
-    mSystem = mEngine->GetComponent<YTEPlugin::WWise::WWiseSystem>();
-    mSystem->RegisterObject(OwnerId(), name);
-    auto listener = OwnerId();
-    AK::SoundEngine::SetListeners(OwnerId(), &listener, 1);
+    mSystem = mEngine->GetComponent<WWiseSystem>();
+    mSystem->RegisterObject(static_cast<AkGameObjectID>(OwnerId()), name);
 
     ConstructSubWidgets();
 
@@ -143,7 +145,7 @@ namespace YTEditor
 
   WWiseWidget::~WWiseWidget()
   {
-    mSystem->DeregisterObject(reinterpret_cast<AkGameObjectID>(this));
+    mSystem->DeregisterObject(static_cast<AkGameObjectID>(OwnerId()));
   }
 
   void WWiseWidget::LoadEvents()
@@ -337,12 +339,21 @@ namespace YTEditor
 
   ToolWindowManager::AreaReference WWiseWidget::GetToolArea()
   {
-    auto area = mWorkspace->GetMainWindow()->GetToolWindowManager()->areaOf(mWorkspace->GetWidget<ComponentBrowser>());
+    auto area = mWorkspace->GetMainWindow()->GetToolWindowManager()->areaOf(mWorkspace->GetWidget<YTEditor::ComponentBrowser>());
 
-    return ToolWindowManager::AreaReference{
-      ToolWindowManager::AreaReferenceType::BottomOf,
-      area
-    };
+    if (area != nullptr)
+    {
+      return ToolWindowManager::AreaReference{
+        ToolWindowManager::AreaReferenceType::BottomOf,
+        area
+      };
+    }
+    else
+    {
+      return ToolWindowManager::AreaReference{
+        ToolWindowManager::AreaReferenceType::LastUsedArea
+      };
+    }
   }
 
   void WWiseWidget::ConstructSubWidgets()

@@ -14,12 +14,12 @@
 
 #include "YTEditor/YTELevelEditor/YTELevelEditor.hpp"
 
-namespace YTEditor
+namespace YTEPlugin::WWise
 {
-  class WWiseWidget : public Framework::Widget<QWidget>
+  class WWiseWidget : public YTEditor::Framework::Widget<QWidget>
   {
   public:
-    WWiseWidget(YTELevelEditor* aWorkspace, YTE::Engine* aEngine);
+    WWiseWidget(YTEditor::YTELevelEditor* aWorkspace, YTE::Engine* aEngine);
     ~WWiseWidget();
 
     YTEPlugin::WWise::WwiseObject OwnerId() { return reinterpret_cast<YTEPlugin::WWise::WwiseObject>(this); };

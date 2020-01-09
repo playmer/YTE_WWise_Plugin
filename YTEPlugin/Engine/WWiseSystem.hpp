@@ -66,9 +66,9 @@ namespace YTEPlugin::WWise
     // Cleans up anything in the system.
     YTEPlugin_WWise_Shared ~WWiseSystem() override;
 
-    YTEPlugin_WWise_Shared void RegisterObject(WwiseObject aId, std::string& aName);
+    YTEPlugin_WWise_Shared void RegisterObject(WwiseObject aId, std::string const& aName);
     YTEPlugin_WWise_Shared void DeregisterObject(WwiseObject aId);
-    YTEPlugin_WWise_Shared YTE::u8 RegisterListener(WwiseObject aId, std::string& aName);
+    YTEPlugin_WWise_Shared YTE::u8 RegisterListener(WwiseObject aId, std::string const& aName);
     YTEPlugin_WWise_Shared void DeregisterListener(WwiseObject aId, YTE::u8 aListener);
     YTEPlugin_WWise_Shared void LoadAllBanks();
     YTEPlugin_WWise_Shared AudioBank& LoadBank(std::string const& aFilename);

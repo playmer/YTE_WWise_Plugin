@@ -2,11 +2,12 @@
 #include "YTE/Core/Engine.hpp"
 #include "YTE/Core/Plugin.hpp"
 
-#include "YTEditor/EditorPlugin.hpp"
-#include "YTEditor/EditorPlugin.hpp"
+#include "YTEditor/YTELevelEditor/YTEditorMainWindow.hpp"
+#include "YTEditor/YTELevelEditor/YTELevelEditor.hpp"
 #include "YTEditor/EditorPlugin.hpp"
 
 #include "YTEPlugin/Editor/WWiseEditorMeta.hpp"
+#include "YTEPlugin/Editor/WWiseWidget.hpp"
 
 namespace YTEPlugin::WWise
 {
@@ -16,19 +17,29 @@ namespace YTEPlugin::WWise
   {
     public:
     WWisePlugin()
+      : mMainWindow{ nullptr }
+      , mWorkSpace{ nullptr }
+      , mWWiseWidget{ nullptr }
     {
 
     }
 
-    void Load(YTEditor::YTEditorMainWindow* aEngine) override
+    void Load(YTEditor::YTEditorMainWindow* aMainWindow) override
     {
+      mMainWindow = aMainWindow;
+
+      mWorkSpace = mMainWindow->GetWorkspace<YTEditor::YTELevelEditor>();
+      mWWiseWidget = mWorkSpace->AddWidget<WWiseWidget>("WWiseWidget", mWorkSpace, aMainWindow->GetRunningEngine());
     }
 
     void Unload() override
     {
+      mWorkSpace->RemoveWidget<WWiseWidget>(mWWiseWidget);
     }
 
-    YTEditor::YTEditorMainWindow* mEngine;
+    YTEditor::YTEditorMainWindow* mMainWindow;
+    YTEditor::YTELevelEditor* mWorkSpace;
+    WWiseWidget* mWWiseWidget;
   };
 }
 
