@@ -341,10 +341,11 @@ namespace YTEPlugin::WWise
 
   WWiseSystem::~WWiseSystem()
   {
-    #ifndef AK_OPTIMIZED
-    // Terminate Communication Services
-    AK::Comm::Term();
-    #endif // AK_OPTIMIZED
+    if constexpr (CompilerOptions::Debug())
+    {
+      // Terminate Communication Services
+      AK::Comm::Term();
+    }
 
     // Terminate the music engine
     AK::MusicEngine::Term();
